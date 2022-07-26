@@ -3,6 +3,9 @@ uuid = "4383ffe1-dc98-4547-9515-b1eacdbc2dac"
 authors = ["MIT UQGroup"]
 version = "0.1.0"
 
+[deps]
+MParT_jll = "bee5971c-294f-5168-9fcd-9fb3c811d495"
+
 [compat]
 julia = "1.6"
 
