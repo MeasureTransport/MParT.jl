@@ -4,9 +4,12 @@ authors = ["MIT UQGroup"]
 version = "0.1.0"
 
 [deps]
+CxxWrap = "1f15a43c-97ca-5a2a-ae31-89f07a497df4"
+Libdl = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
 MParT_jll = "bee5971c-294f-5168-9fcd-9fb3c811d495"
 
 [compat]
+MParT_jll = "0.2"
 julia = "1.6"
 
 [extras]
