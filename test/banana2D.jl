@@ -1,5 +1,5 @@
 using MParT
-using Distributions, LinearAlgebra, Statistics, Random
+using Distributions, LinearAlgebra, Statistics
 using Optimization, OptimizationOptimJL
 
 ##
