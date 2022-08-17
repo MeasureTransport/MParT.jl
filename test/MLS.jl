@@ -50,4 +50,4 @@ SetCoeffs(monotoneMap, u_final)
 ## After Optimization
 map_of_x_after = Evaluate(monotoneMap, x)
 error_after = objective(u_final, p)
-@test error_after ≈ 0. atol=1e-3
+@test error_after ≈ 0. atol=1e-1
