@@ -1,6 +1,10 @@
-using MParT
 using Test
 
-@testset "MParT.jl" begin
-    # Write your tests here.
+@testset "MParT.jl" verbose=true begin
+    @testset verbose=true "Monotone Least Squares" begin
+        include("MLS.jl")
+    end
+    @testset verbose=true "2D Banana From Samples" begin
+        include("banana2D.jl")
+    end
 end
