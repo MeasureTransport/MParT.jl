@@ -61,5 +61,5 @@ map_of_test_x = Evaluate(tri_map, test_x)
 mean_of_map = mean(map_of_test_x, dims=2)
 cov_of_map = cov(map_of_test_x, dims=2)
 
-@test mean_of_map ≈ [0,0] atol=1e-3
-@test cov_of_map ≈ I(2) atol=1e-3
+@test mean_of_map ≈ [0,0] atol=1e-1
+@test cov_of_map ≈ I(2) atol=1e-1
