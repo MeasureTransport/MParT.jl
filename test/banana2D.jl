@@ -1,5 +1,6 @@
 using MParT
-using Distributions, LinearAlgebra, Statistics, Optimization, OptimizationOptimJL
+using Distributions, LinearAlgebra, Statistics, Random
+using Optimization, OptimizationOptimJL
 
 ##
 num_points = 1000
@@ -14,10 +15,8 @@ test_x1 = test_z[1,:]
 test_x2 = test_z[2,:] + test_z[1,:].^2
 test_x = collect([test_x1 test_x2]')
 
-# For Plotting and computing reference density
+# For computing reference density
 reference_density = MvNormal(I(2))
-t = range(-5,5,length=100)
-reference_density_pdf = [pdf(reference_density, [t1,t2]) for t1 in t, t2 in t]
 
 ## Set up map and initialize coefficients
 opts = MapOptions()
@@ -25,7 +24,7 @@ tri_map = CreateTriangular(2,2,2,opts)
 coeffs = zeros(numCoeffs(tri_map))
 
 function obj(coeffs, p)
-    tri_map, x = p
+    tri_map, x, reference_density = p
     SetCoeffs(tri_map, coeffs)
     map_of_x = Evaluate(tri_map, x)
     ref_density_of_map_of_x = logpdf(reference_density, map_of_x)
@@ -43,10 +42,8 @@ function grad_obj(g, coeffs, p)
 end
 
 ## Plot before Optimization
-map_of_x = Evaluate(tri_map, x)
-
 u0 = CoeffMap(tri_map)
-p = (tri_map, x)
+p = (tri_map, x, reference_density)
 fcn = OptimizationFunction(obj, grad = grad_obj)
 prob = OptimizationProblem(fcn, u0, p, g_tol = 1e-16)
 
@@ -61,5 +58,6 @@ map_of_test_x = Evaluate(tri_map, test_x)
 mean_of_map = mean(map_of_test_x, dims=2)
 cov_of_map = cov(map_of_test_x, dims=2)
 
-@test mean_of_map ≈ [0,0] atol=1e-1
-@test cov_of_map ≈ I(2) atol=1e-1
+## Test
+@test norm(mean_of_map) < 1e-1
+@test norm(cov_of_map - I(2)) < 1e-1

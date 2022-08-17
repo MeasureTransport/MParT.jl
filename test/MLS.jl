@@ -1,9 +1,8 @@
 using MParT
-using Distributions, LinearAlgebra, Statistics, Optimization, OptimizationOptimJL
+using Distributions, LinearAlgebra, Statistics
+using Optimization, OptimizationOptimJL
 
-##
-
-# Geometry
+## Geometry
 num_points = 1000
 xmin, xmax = 0,4
 x = collect(range(xmin, xmax, length=num_points)')
@@ -26,8 +25,7 @@ fixed_mset = Fix(mset, true)
 opts = MapOptions()
 monotoneMap = CreateComponent(fixed_mset, opts)
 
-##
-# Least Squares objective
+## Least Squares objective
 function objective(coeffs,p)
     monotoneMap, x, y_measured = p
     SetCoeffs(monotoneMap, coeffs)
@@ -50,4 +48,5 @@ SetCoeffs(monotoneMap, u_final)
 ## After Optimization
 map_of_x_after = Evaluate(monotoneMap, x)
 error_after = objective(u_final, p)
-@test error_after ≈ 0. atol=1e-1
+
+@test abs(sqrt(error_after) - noisesd)/noisesd < 1e-1
