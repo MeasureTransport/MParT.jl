@@ -38,6 +38,7 @@ module MParT
     end
 
     MultiIndexSet(A::AbstractMatrix{<:Integer}) = MultiIndexSet(Cint.(collect(A)))
+    MultiIndexSet(A::AbstractVector{<:Integer}) = MultiIndexSet(Cint.(collect(reshape(A, length(A), 1))))
 
     function MapOptions(;kwargs...)
         opts = __MapOptions()
@@ -48,8 +49,10 @@ module MParT
         opts
     end
 
-    export SetCoeffs, MapOptions, MultiIndexSet,
-           Fix, CoeffMap, LogDeterminant, CreateComponent,
-           Evaluate, numCoeffs, CoeffGrad, LogDeterminantCoeffGrad,
-           CreateTriangular, BasisTypes, PosFuncTypes, QuadTypes
+    export SetCoeffs, MapOptions, MultiIndexSet, FixedMultiIndexSet,
+           Fix, CoeffMap, LogDeterminant,
+           Evaluate, numCoeffs, CoeffGrad,
+           LogDeterminantCoeffGrad, Inverse,
+           CreateComponent, CreateTriangular,
+           BasisTypes, PosFuncTypes, QuadTypes
 end
