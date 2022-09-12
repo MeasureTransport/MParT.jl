@@ -10,7 +10,7 @@ MParT_jll = "bee5971c-294f-5168-9fcd-9fb3c811d495"
 
 [compat]
 CxxWrap = "0.12"
-MParT_jll = "0.3.3"
+MParT_jll = "1.0.0"
 julia = "1.6"
 
 [extras]
