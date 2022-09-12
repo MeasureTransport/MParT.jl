@@ -13,29 +13,29 @@ module MParT
         Initialize(StdVector(StdString.(opts)))
     end
 
-    module BasisTypes
-        using CxxWrap
-        @wrapmodule libmpartjl :BasisType_julia_module
-        function __init__()
-            @initcxx
-        end
-    end
+    # module BasisTypes
+    #     using CxxWrap
+    #     @wrapmodule libmpartjl :BasisType_julia_module
+    #     function __init__()
+    #         @initcxx
+    #     end
+    # end
 
-    module PosFuncTypes
-        using CxxWrap
-        @wrapmodule libmpartjl :PosFuncType_julia_module
-        function __init__()
-            @initcxx
-        end
-    end
+    # module PosFuncTypes
+    #     using CxxWrap
+    #     @wrapmodule libmpartjl :PosFuncType_julia_module
+    #     function __init__()
+    #         @initcxx
+    #     end
+    # end
 
-    module QuadTypes
-        using CxxWrap
-        @wrapmodule libmpartjl :QuadType_julia_module
-        function __init__()
-            @initcxx
-        end
-    end
+    # module QuadTypes
+    #     using CxxWrap
+    #     @wrapmodule libmpartjl :QuadType_julia_module
+    #     function __init__()
+    #         @initcxx
+    #     end
+    # end
 
     MultiIndexSet(A::AbstractMatrix{<:Integer}) = MultiIndexSet(Cint.(collect(A)))
     MultiIndexSet(A::AbstractVector{<:Integer}) = MultiIndexSet(Cint.(collect(reshape(A, length(A), 1))))
@@ -53,6 +53,6 @@ module MParT
            Fix, CoeffMap, LogDeterminant, CreateTotalOrder,
            Evaluate, numCoeffs, CoeffGrad, Gradient,
            LogDeterminantCoeffGrad, Inverse,
-           CreateComponent, CreateTriangular,
-           BasisTypes, PosFuncTypes, QuadTypes
+           CreateComponent, CreateTriangular
+        #    BasisTypes, PosFuncTypes, QuadTypes
 end
