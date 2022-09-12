@@ -38,7 +38,7 @@ function grad_obj(g, coeffs, p)
     map_of_x = Evaluate(tri_map, x)
     grad_ref_density_of_map_of_x = -CoeffGrad(tri_map, x, map_of_x)
     grad_log_det = LogDeterminantCoeffGrad(tri_map, x)
-    g .= -sum(grad_ref_density_of_map_of_x + grad_log_det, dims=2)/num_points
+    g .= -vec(sum(grad_ref_density_of_map_of_x + grad_log_det, dims=2))/num_points
 end
 
 ## Plot before Optimization
