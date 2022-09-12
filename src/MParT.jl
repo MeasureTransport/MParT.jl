@@ -50,8 +50,8 @@ module MParT
     end
 
     export SetCoeffs, MapOptions, MultiIndexSet, FixedMultiIndexSet,
-           Fix, CoeffMap, LogDeterminant,
-           Evaluate, numCoeffs, CoeffGrad,
+           Fix, CoeffMap, LogDeterminant, CreateTotalOrder,
+           Evaluate, numCoeffs, CoeffGrad, Gradient,
            LogDeterminantCoeffGrad, Inverse,
            CreateComponent, CreateTriangular,
            BasisTypes, PosFuncTypes, QuadTypes
