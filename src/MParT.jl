@@ -3,7 +3,7 @@ module MParT
     using CxxWrap
     using MParT_jll
     import Libdl
-    @wrapmodule "libmpartjl" :MParT_julia_module
+    @wrapmodule libmpartjl :MParT_julia_module
 
     function __init__()
         @initcxx
