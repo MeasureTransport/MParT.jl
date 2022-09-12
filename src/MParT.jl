@@ -15,7 +15,7 @@ module MParT
 
     module BasisTypes
         using CxxWrap
-        @wrapmodule("libmpartjl", :BasisType_julia_module)
+        @wrapmodule libmpartjl :BasisType_julia_module
         function __init__()
             @initcxx
         end
@@ -23,7 +23,7 @@ module MParT
 
     module PosFuncTypes
         using CxxWrap
-        @wrapmodule("libmpartjl", :PosFuncType_julia_module)
+        @wrapmodule libmpartjl :PosFuncType_julia_module
         function __init__()
             @initcxx
         end
@@ -31,7 +31,7 @@ module MParT
 
     module QuadTypes
         using CxxWrap
-        @wrapmodule("libmpartjl", :QuadType_julia_module)
+        @wrapmodule libmpartjl :QuadType_julia_module
         function __init__()
             @initcxx
         end
