@@ -38,9 +38,10 @@ module MParT
     end
 
     # MultiIndex-related exports
-    export MultiIndex, MultiIndexSet, FixedMultiIndexSet, Fix
+    export MultiIndex, MultiIndexSet, FixedMultiIndexSet, Fix, CreateTotalOrder
     # ParameterizedFunctionBase-related exports
-    export CoeffMap, SetCoeffs, numCoeffs, inputDim, outputDim, Evaluate, CoeffGrad
+    export CoeffMap, SetCoeffs, numCoeffs, inputDim, outputDim
+    export Evaluate, CoeffGrad, Gradient
     # ConditionalMapBase-related exports
     export GetBaseFunction, LogDeterminant, LogDeterminantCoeffGrad, Inverse
     # TriangularMap-related exports
