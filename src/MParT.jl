@@ -4,6 +4,7 @@ module MParT
     using MParT_jll
     import Libdl
     @wrapmodule libmpartjl :MParT_julia_module
+    import Base: getindex, lastindex
 
     function __init__()
         @initcxx
@@ -16,6 +17,8 @@ module MParT
     # Provides shortcuts for MultiIndexSet for Julia-style arrays
     MultiIndexSet(A::AbstractMatrix{<:Integer}) = MultiIndexSet(Cint.(collect(A)))
     MultiIndexSet(A::AbstractVector{<:Integer}) = MultiIndexSet(Cint.(collect(reshape(A, length(A), 1))))
+    Base.getindex(A::MultiIndex, i::AbstractVector{<:Integer}) = getindex.((A,), i)
+    Base.lastindex(A::MultiIndex) = length(A)
 
     """
         `MapOptions(;kwargs...)`
