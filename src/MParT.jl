@@ -6,7 +6,7 @@ module MParT
     @wrapmodule libmpartjl :MParT_julia_module
     import Base: getindex, lastindex
 
-    mapSubtypeAlias{T} = Union{T,CxxWrap.CxxWrapCore.SmartPointer{T}}
+    mapSubtypeAlias{T} = Union{T,<:CxxWrap.CxxWrapCore.SmartPointer{T}}
 
     function __init__()
         @initcxx
