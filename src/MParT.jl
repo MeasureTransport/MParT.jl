@@ -22,7 +22,7 @@ module MParT
     Base.getindex(A::MultiIndex, i::AbstractVector{<:Integer}) = getindex.((A,), i)
     Base.lastindex(A::MultiIndex) = length(A)
 
-    Base.getindex(A::TriangularMap, s::Base.UnitRange) = Slice(A, s)
+    Base.getindex(A::CxxWrap.StdLib.SharedPtrAllocated{<:MParT.TriangularMap}, s::Base.UnitRange) = Slice(A, first(s), last(s))
 
     """
         `MapOptions(;kwargs...)`
