@@ -22,6 +22,8 @@ module MParT
     Base.getindex(A::MultiIndex, i::AbstractVector{<:Integer}) = getindex.((A,), i)
     Base.lastindex(A::MultiIndex) = length(A)
 
+    Base.getindex(A::TriangularMap, s::Base.UnitRange) = Slice(A, s)
+
     """
         `MapOptions(;kwargs...)`
     Takes the fields from MParT's `MapOptions` as keyword arguments, and
