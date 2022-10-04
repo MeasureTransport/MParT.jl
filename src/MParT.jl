@@ -44,6 +44,15 @@ module MParT
         opts
     end
 
+    """
+        `ComposedMap(maps::Vector{<:mapSubtypeAlias{<:ConditionalMapBase}})`
+    Creates a `ComposedMap` from a vector of `ConditionalMapBase` objects.
+    """
+    function ComposedMap(maps::Vector{<:mapSubtypeAlias{<:ConditionalMapBase}})
+        maps_std = StdVector(maps)
+        ComposedMap(maps_std)
+    end
+
     # MultiIndex-related exports
     export MultiIndex, MultiIndexSet, FixedMultiIndexSet
     export Fix, CreateTotalOrder, Size
@@ -56,6 +65,8 @@ module MParT
     export InverseInplace, GetComponent
     # AffineMap-related exports
     export AffineMap, AffineFunction
+    # ComposedMap-related exports
+    export ComposedMap
     # MapFactory-related exports
     export CreateComponent, CreateTriangular
     # MapOptions-related exports
