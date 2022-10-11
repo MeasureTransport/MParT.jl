@@ -22,7 +22,7 @@ module MParT
     Base.getindex(A::MultiIndex, i::AbstractVector{<:Integer}) = getindex.((A,), i)
     Base.lastindex(A::MultiIndex) = length(A)
 
-    Base.getindex(A::CxxWrap.StdLib.SharedPtrAllocated{<:MParT.TriangularMap}, s::Base.UnitRange) = Slice(A, first(s), last(s))
+    Base.getindex(A::CxxWrap.reference_type_union(MParT.TriangularMap), s::Base.UnitRange) = Slice(A, first(s), last(s))
 
     """
         `MapOptions(;kwargs...)`
@@ -45,11 +45,15 @@ module MParT
     end
 
     """
-        `ComposedMap(maps::Vector{<:mapSubtypeAlias{<:ConditionalMapBase}})`
+        `ComposedMap(maps::Vector)`
     Creates a `ComposedMap` from a vector of `ConditionalMapBase` objects.
     """
-    function ComposedMap(maps::Vector{<:mapSubtypeAlias{<:ConditionalMapBase}})
-        maps_std = StdVector(maps)
+    function ComposedMap(maps::Vector{<:CxxWrap.StdLib.SharedPtr{<:ConditionalMapBase}})
+        maps_cmb = Vector{CxxWrap.StdLib.SharedPtr{ConditionalMapBase}}(undef, length(maps))
+        for (i, map) in enumerate(maps)
+            maps_cmb[i] = map
+        end
+        maps_std = StdVector(maps_cmb)
         ComposedMap(maps_std)
     end
 
