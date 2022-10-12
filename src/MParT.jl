@@ -76,5 +76,5 @@ module MParT
     # MapOptions-related exports
     export MapOptions
     # Other important utils
-    export mapSubtypeAlias
+    export Concurrency
 end
