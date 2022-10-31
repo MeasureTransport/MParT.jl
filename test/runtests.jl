@@ -1,6 +1,9 @@
 using Test
 
 @testset "MParT.jl" verbose=true begin
+    @testset verbose=true "Affine, Composed Map" begin
+        include("mapTypeTest.jl")
+    end
     @testset verbose=true "Monotone Least Squares" begin
         include("MLS.jl")
     end

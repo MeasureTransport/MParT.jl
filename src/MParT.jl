@@ -22,7 +22,7 @@ module MParT
     Base.getindex(A::MultiIndex, i::AbstractVector{<:Integer}) = getindex.((A,), i)
     Base.lastindex(A::MultiIndex) = length(A)
 
-    Base.getindex(A::CxxWrap.StdLib.SharedPtrAllocated{<:MParT.TriangularMap}, s::Base.UnitRange) = Slice(A, first(s), last(s))
+    Base.getindex(A::CxxWrap.reference_type_union(MParT.TriangularMap), s::Base.UnitRange) = Slice(A, first(s), last(s))
 
     """
         `MapOptions(;kwargs...)`
@@ -44,6 +44,19 @@ module MParT
         opts
     end
 
+    """
+        `ComposedMap(maps::Vector)`
+    Creates a `ComposedMap` from a vector of `ConditionalMapBase` objects.
+    """
+    function ComposedMap(maps::Vector{<:CxxWrap.StdLib.SharedPtr{<:ConditionalMapBase}})
+        maps_cmb = Vector{CxxWrap.StdLib.SharedPtr{ConditionalMapBase}}(undef, length(maps))
+        for (i, map) in enumerate(maps)
+            maps_cmb[i] = map
+        end
+        maps_std = StdVector(maps_cmb)
+        ComposedMap(maps_std)
+    end
+
     # MultiIndex-related exports
     export MultiIndex, MultiIndexSet, FixedMultiIndexSet
     export Fix, CreateTotalOrder, Size
@@ -56,10 +69,12 @@ module MParT
     export InverseInplace, GetComponent
     # AffineMap-related exports
     export AffineMap, AffineFunction
+    # ComposedMap-related exports
+    export ComposedMap
     # MapFactory-related exports
     export CreateComponent, CreateTriangular
     # MapOptions-related exports
     export MapOptions
     # Other important utils
-    export mapSubtypeAlias
+    export Concurrency
 end
