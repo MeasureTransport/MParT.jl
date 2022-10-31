@@ -1,7 +1,7 @@
 name = "MParT"
 uuid = "4383ffe1-dc98-4547-9515-b1eacdbc2dac"
 authors = ["MIT UQGroup"]
-version = "1.1.0"
+version = "1.2.0"
 
 [deps]
 CxxWrap = "1f15a43c-97ca-5a2a-ae31-89f07a497df4"
@@ -10,7 +10,7 @@ MParT_jll = "bee5971c-294f-5168-9fcd-9fb3c811d495"
 
 [compat]
 CxxWrap = "0.12"
-MParT_jll = "1.1.0"
+MParT_jll = "1.2.0"
 julia = "1.6"
 
 [extras]
