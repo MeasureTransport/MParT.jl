@@ -38,7 +38,10 @@ module MParT
         opts = __MapOptions()
         for kwarg in kwargs
             field = Symbol("__"*string(first(kwarg))*"!")
-            value = MParT.eval(Meta.parse("__"*last(kwarg)))
+            value = last(kwarg)
+            if value isa String
+                value = MParT.eval(Meta.parse("__"*value))
+            end
             getfield(MParT, field)(opts, value)
         end
         opts
@@ -72,7 +75,7 @@ module MParT
     # ComposedMap-related exports
     export ComposedMap
     # MapFactory-related exports
-    export CreateComponent, CreateTriangular
+    export CreateComponent, CreateTriangular, CreateExpansion
     # MapOptions-related exports
     export MapOptions
     # Other important utils
