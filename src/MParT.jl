@@ -38,7 +38,30 @@ module MParT
         opts = __MapOptions()
         for kwarg in kwargs
             field = Symbol("__"*string(first(kwarg))*"!")
-            value = MParT.eval(Meta.parse("__"*last(kwarg)))
+            value = last(kwarg)
+            if value isa String
+                value = MParT.eval(Meta.parse("__"*value))
+            end
+            getfield(MParT, field)(opts, value)
+        end
+        opts
+    end
+
+    """
+        `TrainOptions(;kwargs...)`
+    Takes the fields from MParT's `TrainOptions` as keyword arguments, and
+    assigns the field value based on a String from the kwarg value, e.g.
+    ```julia
+    julia> using MParT
+
+    julia> TrainOptions(opt_alg="LD_SLSQP")
+    ```
+    """
+    function TrainOptions(;kwargs...)
+        opts = __TrainOptions()
+        for kwarg in kwargs
+            field = Symbol("__"*string(first(kwarg))*"!")
+            value = last(kwarg)
             getfield(MParT, field)(opts, value)
         end
         opts
@@ -75,6 +98,8 @@ module MParT
     export CreateComponent, CreateTriangular
     # MapOptions-related exports
     export MapOptions
+    # Map training related exports
+    export GaussianKLObjective, TrainOptions, TrainMap
     # Other important utils
     export Concurrency
 end
