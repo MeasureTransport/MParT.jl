@@ -4,7 +4,7 @@ module MParT
     using MParT_jll
     import Libdl
     @wrapmodule libmpartjl :MParT_julia_module
-    import Base: getindex, lastindex
+    import Base: getindex, lastindex, show
 
     mapSubtypeAlias{T} = Union{T,<:CxxWrap.CxxWrapCore.SmartPointer{T}}
 
@@ -47,6 +47,17 @@ module MParT
         opts
     end
 
+    # To print MapOptions, TrainOptions objects
+    Base.show(io::IO,::MIME"text/plain", opts::__MapOptions) = print(io,string(opts))
+    Base.show(io::IO,::MIME"text/plain", opts::__TrainOptions) = print(io,string(opts))
+
+
+    function DeserializeMap(filename::String)
+        dims = Cint[0,0]
+        coeffs = __DeserializeMap(filename, dims);
+        dims[1], dims[2], coeffs
+    end
+
     """
         `TrainOptions(;kwargs...)`
     Takes the fields from MParT's `TrainOptions` as keyword arguments, and
@@ -65,6 +76,19 @@ module MParT
             getfield(MParT, field)(opts, value)
         end
         opts
+    end
+
+    """
+        `TriangularMap(maps::Vector)`
+    Creates a `TriangularMap` from a vector of `ConditionalMapBase` objects
+    """
+    function TriangularMap(maps::Vector{<:CxxWrap.StdLib.SharedPtr{<:ConditionalMapBase}})
+        maps_cmb = Vector{CxxWrap.StdLib.SharedPtr{ConditionalMapBase}}(undef, length(maps))
+        for (i, map) in enumerate(maps)
+            maps_cmb[i] = map
+        end
+        maps_std = StdVector(maps_cmb)
+        TriangularMap(maps_std)
     end
 
     """
@@ -89,7 +113,7 @@ module MParT
     # ConditionalMapBase-related exports
     export GetBaseFunction, LogDeterminant, LogDeterminantCoeffGrad, Inverse
     # TriangularMap-related exports
-    export InverseInplace, GetComponent
+    export TriangularMap, InverseInplace, GetComponent
     # AffineMap-related exports
     export AffineMap, AffineFunction
     # ComposedMap-related exports
@@ -98,6 +122,8 @@ module MParT
     export CreateComponent, CreateTriangular
     # MapOptions-related exports
     export MapOptions
+    # Serialization-related exports
+    export Serialize, Deserialize
     # Map training related exports
     export GaussianKLObjective, TrainOptions, TrainMap
     # Other important utils
