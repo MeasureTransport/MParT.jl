@@ -123,9 +123,9 @@ module MParT
     # MapOptions-related exports
     export MapOptions
     # Serialization-related exports
-    export Serialize, Deserialize
+    export Serialize, Deserialize, DeserializeMap
     # Map training related exports
-    export GaussianKLObjective, TrainOptions, TrainMap
+    export GaussianKLObjective, TrainOptions, TrainMap, TestError
     # Other important utils
     export Concurrency
 end
