@@ -47,17 +47,6 @@ module MParT
         opts
     end
 
-    # To print MapOptions, TrainOptions objects
-    Base.show(io::IO,::MIME"text/plain", opts::__MapOptions) = print(io,string(opts))
-    Base.show(io::IO,::MIME"text/plain", opts::__TrainOptions) = print(io,string(opts))
-
-
-    function DeserializeMap(filename::String)
-        dims = Cint[0,0]
-        coeffs = __DeserializeMap(filename, dims);
-        dims[1], dims[2], coeffs
-    end
-
     """
         `TrainOptions(;kwargs...)`
     Takes the fields from MParT's `TrainOptions` as keyword arguments, and
@@ -77,6 +66,46 @@ module MParT
         end
         opts
     end
+
+    """
+        `ATMOptions(;kwargs...)`
+    Takes the fields from MParT's `ATMOptions` as keyword arguments, and
+    assigns the field value based on a String from the kwarg value, e.g.
+    ```julia
+    julia> using MParT
+
+    julia> maxDegrees = MultiIndex(2,3) # limit both dimensions by order 3
+
+    julia> ATMOptions(opt_alg="LD_SLSQP", maxDegrees=maxDegrees)
+    ```
+    """
+    function ATMOptions(;kwargs...)
+        opts = __ATMOptions()
+        for kwarg in kwargs
+            field = Symbol("__"*string(first(kwarg))*"!")
+            value = last(kwarg)
+            getfield(MParT, field)(opts, value)
+        end
+        opts
+    end
+
+    # To print MapOptions, TrainOptions objects
+    Base.show(io::IO,::MIME"text/plain", opts::__MapOptions) = print(io,string(opts))
+    Base.show(io::IO,::MIME"text/plain", opts::__TrainOptions) = print(io,string(opts))
+
+
+    function DeserializeMap(filename::String)
+        dims = Cint[0,0]
+        coeffs = __DeserializeMap(filename, dims);
+        dims[1], dims[2], coeffs
+    end
+
+
+    function AdaptiveTransportMap(msets::Vector{<:MultiIndexSet},obj::CxxWrap.StdLib.SharedPtr{<:GaussianKLObjective}, opts::__ATMOptions)
+        msets_vec = [CxxRef(mset) for mset in msets]
+        AdaptiveTransportMap(msets_vec, obj, opts)
+    end
+
 
     """
         `TriangularMap(maps::Vector)`
@@ -126,6 +155,8 @@ module MParT
     export Serialize, Deserialize, DeserializeMap
     # Map training related exports
     export GaussianKLObjective, TrainOptions, TrainMap, TestError
+    # ATM-related exports
+    export AdaptiveTransportMap, ATMOptions
     # Other important utils
     export Concurrency
 end
