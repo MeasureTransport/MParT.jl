@@ -4,7 +4,7 @@ module MParT
     using MParT_jll
     import Libdl
     @wrapmodule libmpartjl :MParT_julia_module
-    import Base: getindex, lastindex, show
+    import Base: getindex, lastindex, show, iterate
 
     mapSubtypeAlias{T} = Union{T,<:CxxWrap.CxxWrapCore.SmartPointer{T}}
 
@@ -14,6 +14,15 @@ module MParT
         opts = isnothing(threads) ? [] : ["kokkos_num_threads", threads]
         length(opts) > 0 && @info "Using MParT options: "*string(string.(opts))
         Initialize(StdVector(StdString.(opts)))
+    end
+
+    function Base.iterate(mset::MultiIndexSet)
+        Size(mset) < 1 && return nothing
+        mset[1],2
+    end
+    function Base.iterate(mset::MultiIndexSet,state::Int)
+        state > Size(mset) && return nothing
+        return mset[state], state+1
     end
 
     # Provides shortcuts for MultiIndexSet for Julia-style arrays
@@ -101,7 +110,7 @@ module MParT
     end
 
 
-    function AdaptiveTransportMap(msets::Vector{<:MultiIndexSet},obj::CxxWrap.StdLib.SharedPtr{<:GaussianKLObjective}, opts::__ATMOptions)
+    function AdaptiveTransportMap(msets::Vector{<:MultiIndexSet},obj::CxxWrap.StdLib.SharedPtr{<:MapObjective}, opts::__ATMOptions)
         msets_vec = [CxxRef(mset) for mset in msets]
         AdaptiveTransportMap(msets_vec, obj, opts)
     end
@@ -154,7 +163,7 @@ module MParT
     # Serialization-related exports
     export Serialize, Deserialize, DeserializeMap
     # Map training related exports
-    export GaussianKLObjective, TrainOptions, TrainMap, TestError
+    export CreateGaussianKLObjective, TrainOptions, TrainMap, TestError
     # ATM-related exports
     export AdaptiveTransportMap, ATMOptions
     # Other important utils
