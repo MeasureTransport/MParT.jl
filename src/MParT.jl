@@ -6,7 +6,7 @@ module MParT
     @wrapmodule libmpartjl :MParT_julia_module
     import Base: getindex, lastindex, show, iterate
 
-    mapSubtypeAlias{T} = Union{T,<:CxxWrap.CxxWrapCore.SmartPointer{T}}
+    ConditionalMapBasePtr = CxxWrap.StdLib.SharedPtr{<:ConditionalMapBase}
 
     function __init__()
         @initcxx
@@ -20,6 +20,7 @@ module MParT
         Size(mset) < 1 && return nothing
         mset[1],2
     end
+
     function Base.iterate(mset::MultiIndexSet,state::Int)
         state > Size(mset) && return nothing
         return mset[state], state+1
@@ -31,7 +32,8 @@ module MParT
     Base.getindex(A::MultiIndex, i::AbstractVector{<:Integer}) = getindex.((A,), i)
     Base.lastindex(A::MultiIndex) = length(A)
 
-    Base.getindex(A::CxxWrap.reference_type_union(MParT.TriangularMap), s::Base.UnitRange) = Slice(A, first(s), last(s))
+    # Not implemented yet
+    # Base.getindex(A::CxxWrap.reference_type_union(MParT.TriangularMap), s::Base.UnitRange) = Slice(A, first(s), last(s))
 
     """
         `MapOptions(;kwargs...)`
@@ -120,8 +122,8 @@ module MParT
         `TriangularMap(maps::Vector)`
     Creates a `TriangularMap` from a vector of `ConditionalMapBase` objects
     """
-    function TriangularMap(maps::Vector{<:CxxWrap.StdLib.SharedPtr{<:ConditionalMapBase}})
-        maps_cmb = Vector{CxxWrap.StdLib.SharedPtr{ConditionalMapBase}}(undef, length(maps))
+    function TriangularMap(maps::Vector{<:ConditionalMapBasePtr})
+        maps_cmb = Vector{ConditionalMapBasePtr}(undef, length(maps))
         for (i, map) in enumerate(maps)
             maps_cmb[i] = map
         end
@@ -133,8 +135,8 @@ module MParT
         `ComposedMap(maps::Vector)`
     Creates a `ComposedMap` from a vector of `ConditionalMapBase` objects.
     """
-    function ComposedMap(maps::Vector{<:CxxWrap.StdLib.SharedPtr{<:ConditionalMapBase}})
-        maps_cmb = Vector{CxxWrap.StdLib.SharedPtr{ConditionalMapBase}}(undef, length(maps))
+    function ComposedMap(maps::Vector{<:ConditionalMapBasePtr})
+        maps_cmb = Vector{ConditionalMapBasePtr}(undef, length(maps))
         for (i, map) in enumerate(maps)
             maps_cmb[i] = map
         end
@@ -149,7 +151,7 @@ module MParT
     export CoeffMap, SetCoeffs, numCoeffs, inputDim, outputDim
     export Evaluate, CoeffGrad, Gradient
     # ConditionalMapBase-related exports
-    export GetBaseFunction, LogDeterminant, LogDeterminantCoeffGrad, Inverse
+    export ConditionalMapBasePtr, GetBaseFunction, LogDeterminant, LogDeterminantCoeffGrad, Inverse
     # TriangularMap-related exports
     export TriangularMap, InverseInplace, GetComponent
     # AffineMap-related exports
