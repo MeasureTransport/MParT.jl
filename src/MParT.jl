@@ -78,6 +78,9 @@ module MParT
         opts
     end
 
+    CreateGaussianKLObjective(train::Matrix{Float64}) = CreateGaussianKLObjective(train,0)
+    CreateGaussianKLObjective(train::Matrix{Float64},test::Matrix{Float64}) = CreateGaussianKLObjective(train,test,0)
+
     """
         `TriangularMap(maps::Vector)`
     Creates a `TriangularMap` from a vector of `ConditionalMapBase` objects
@@ -125,7 +128,7 @@ module MParT
     # Serialization-related exports
     export Serialize, Deserialize, DeserializeMap
     # Map training related exports
-    export GaussianKLObjective, TrainOptions, TrainMap, TestError
+    export CreateGaussianKLObjective, TrainOptions, TrainMap, TestError
     # Other important utils
     export Concurrency
 end

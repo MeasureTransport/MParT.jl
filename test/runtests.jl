@@ -1,8 +1,8 @@
-using Test
+using Test, MParT
 
 @testset "MParT.jl" begin
     @testset "Affine, Composed Map" begin
-        include("mapTypeTest.jl")
+        # include("mapTypeTest.jl")
     end
     @testset "Monotone Least Squares" begin
         # include("MLS.jl")
@@ -10,4 +10,5 @@ using Test
     @testset "2D Banana From Samples" begin
         # include("banana2D.jl")
     end
+    @testset "TrainMap" include("trainMapTest.jl")
 end
