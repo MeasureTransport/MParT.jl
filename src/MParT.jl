@@ -78,6 +78,9 @@ module MParT
         opts
     end
 
+    CreateGaussianKLObjective(train::Matrix{Float64}) = CreateGaussianKLObjective(train,0)
+    CreateGaussianKLObjective(train::Matrix{Float64},test::Matrix{Float64}) = CreateGaussianKLObjective(train,test,0)
+
     """
         `ATMOptions(;kwargs...)`
     Takes the fields from MParT's `ATMOptions` as keyword arguments, and
