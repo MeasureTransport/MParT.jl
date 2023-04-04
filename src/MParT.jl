@@ -115,9 +115,9 @@ module MParT
     end
 
 
-    function AdaptiveTransportMap(msets::Vector{<:MultiIndexSet},obj::CxxWrap.StdLib.SharedPtr{<:MapObjective}, opts::__ATMOptions)
+    function TrainMapAdaptive(msets::Vector{<:MultiIndexSet},obj::CxxWrap.StdLib.SharedPtr{<:MapObjective}, opts::__ATMOptions)
         msets_vec = [CxxRef(mset) for mset in msets]
-        AdaptiveTransportMap(msets_vec, obj, opts)
+        TrainMapAdaptive(msets_vec, obj, opts)
     end
 
 
@@ -170,7 +170,7 @@ module MParT
     # Map training related exports
     export CreateGaussianKLObjective, TrainOptions, TrainMap, TestError
     # ATM-related exports
-    export AdaptiveTransportMap, ATMOptions
+    export TrainMapAdaptive, ATMOptions
     # Other important utils
     export Concurrency
 end
