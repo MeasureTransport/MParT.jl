@@ -10,5 +10,7 @@ using Test, MParT
     @testset "2D Banana From Samples" begin
         include("banana2D.jl")
     end
-    @testset "TrainMap" include("trainMapTest.jl")
+    @testset "TrainMap" begin
+        include("trainMapTest.jl")
+    end
 end
