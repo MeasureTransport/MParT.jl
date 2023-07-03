@@ -1,5 +1,5 @@
 using MParT
-using Distributions, LinearAlgebra, Statistics
+using Distributions, LinearAlgebra, Statistics, CxxWrap
 
 A = Float64[1 2; 4 5]
 b = Float64[5, 6]
@@ -10,7 +10,7 @@ a_map1 = AffineMap(A, b)
 a_map2 = AffineMap(A)
 a_map3 = AffineMap(b)
 a_fun = AffineFunction(A, b)
-c_map = ComposedMap([a_map2, a_map3])
+c_map = ComposedMap(StdVector(MParT.ConditionalMapBase[a_map2, a_map3]))
 
 ## Test the eval
 x = randn(size(A, 2), N_samples)

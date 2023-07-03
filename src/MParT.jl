@@ -1,12 +1,12 @@
 # Wrapping code to make the Julia module usable
 module MParT
-using CxxWrap
-using MParT_jll
-import Libdl
-@wrapmodule libmpartjl :MParT_julia_module
-import Base: getindex, lastindex, show, iterate
+    using CxxWrap
+    using MParT_jll
+    import Libdl
+    @wrapmodule libmpartjl :MParT_julia_module
+    import Base: getindex, lastindex, show, iterate
 
-    mapSubtypeAlias{T} = Union{T,<:CxxWrap.CxxWrapCore.SmartPointer{T}}
+    ConditionalMapBasePtr = CxxWrap.StdLib.SharedPtr{<:ConditionalMapBase}
 
 function __init__()
     @initcxx
@@ -51,7 +51,8 @@ MultiIndexSet(A::AbstractVector{<:Integer}) = MultiIndexSet(Cint.(collect(reshap
 Base.getindex(A::MultiIndex, i::AbstractVector{<:Integer}) = getindex.((A,), i)
 Base.lastindex(A::MultiIndex) = length(A)
 
-    Base.getindex(A::CxxWrap.reference_type_union(MParT.TriangularMap), s::Base.UnitRange) = Slice(A, first(s), last(s))
+    # Not implemented yet
+    # Base.getindex(A::CxxWrap.reference_type_union(MParT.TriangularMap), s::Base.UnitRange) = Slice(A, first(s), last(s))
 
 """
     MapOptions(;kwargs...)
