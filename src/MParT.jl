@@ -64,9 +64,20 @@ assigns the field value based on a String from the kwarg value.
 
 # Example
 ```jldoctest
-julia> using MParT
-
 julia> MapOptions(basisType="HermiteFunctions", basisLB=-3., basisUB=3.)
+basisType = HermiteFunctions
+basisLB = -3
+basisUB = 3
+basisNorm = true
+posFuncType = SoftPlus
+quadType = AdaptiveSimpson
+quadAbsTol = 1e-06
+quadRelTol = 1e-06
+quadMaxSub = 30
+quadMinSub = 0
+quadPts = 5
+contDeriv = true
+
 ```
 """
 function MapOptions(;kwargs...)
@@ -92,7 +103,17 @@ assigns the field value based on a String from keyword arguments.
 
 # Examples
 ```jldoctest
-julia> TrainOptions(opt_alg="LD_SLSQP")
+julia> TrainOptions(opt_alg="LD_SLSQP", opt_maxeval = 1_000_000)
+opt_alg = LD_SLSQP
+opt_stopval = -inf
+opt_ftol_rel = 0.001
+opt_ftol_abs = 0.001
+opt_xtol_rel = 0.0001
+opt_xtol_abs = 0.0001
+opt_maxeval = 1000000
+opt_maxtime = inf
+verbose = 0
+
 ```
 """
 function TrainOptions(;kwargs...)
@@ -158,9 +179,9 @@ assigns the field value based on a String from keyword arguments.
 
 # Examples
 ```jldoctest
-julia> maxDegrees = MultiIndex(2,3) # limit both dimensions by order 3
+julia> maxDegrees = MultiIndex(2,3); # limit both dimensions by order 3
 
-julia> ATMOptions(opt_alg="LD_SLSQP", maxDegrees=maxDegrees)
+julia> ATMOptions(opt_alg="LD_SLSQP", maxDegrees=maxDegrees);
 ```
 """
 function ATMOptions(;kwargs...)
@@ -209,15 +230,15 @@ Creates a `TriangularMap` from a vector of `ConditionalMapBase` objects.
 
 # Examples
 ```jldoctest
-julia> dim, order = 5, 3
+julia> dim, order = 5, 3;
 
-julia> msets = [FixedMultiIndexSet(d, order) for d in 1:dim]
+julia> msets = [FixedMultiIndexSet(d, order) for d in 1:dim];
 
-julia> opts = MapOptions()
+julia> opts = MapOptions();
 
-julia> components = [CreateComponent(mset, opts) for mset in msets]
+julia> components = [CreateComponent(mset, opts) for mset in msets];
 
-julia> trimap = TriangularMap(components)
+julia> trimap = TriangularMap(components);
 ```
 """
 function TriangularMap(maps::Vector)
