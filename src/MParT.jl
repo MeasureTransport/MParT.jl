@@ -51,16 +51,17 @@ MultiIndexSet(A::AbstractVector{<:Integer}) = MultiIndexSet(Cint.(collect(reshap
 Base.getindex(A::MultiIndex, i::AbstractVector{<:Integer}) = getindex.((A,), i)
 Base.lastindex(A::MultiIndex) = length(A)
 
-    # Not implemented yet
-    # Base.getindex(A::CxxWrap.reference_type_union(MParT.TriangularMap), s::Base.UnitRange) = Slice(A, first(s), last(s))
+# Not implemented yet
+# Base.getindex(A::CxxWrap.reference_type_union(MParT.TriangularMap), s::Base.UnitRange) = Slice(A, first(s), last(s))
 
 """
     MapOptions(;kwargs...)
 Takes the fields from MParT's `MapOptions` as keyword arguments, and
-assigns the field value based on a String from the kwarg value.
+assigns the field value based on a String from the kwarg value. Some arguments are included below. See C++ documentation for further detail.
 
 # Arguments
-- ``
+- `basisType::String`: Includes "ProbabilistHermite", "PhysicistHermite", "HermiteFunctions"
+- `basisLB::Float64`,`basisUB::Float64`: The bounds for where we start linearizing the map. These default to infinities, but often making the data near the origin and setting them to a small finite number (e.g. +-3) works well.
 
 # Example
 ```jldoctest
@@ -97,9 +98,7 @@ end
     `TrainOptions(;kwargs...)`
 
 Takes the fields from MParT's `TrainOptions` as keyword arguments, and
-assigns the field value based on a String from keyword arguments.
-# Arguments
--``:
+assigns the field value based on a String from keyword arguments. See example for possible arguments.
 
 # Examples
 ```jldoctest
@@ -115,6 +114,7 @@ opt_maxtime = inf
 verbose = 0
 
 ```
+See also[`TrainMap`](@ref), [`CreateGaussianKLObjective`](@ref)
 """
 function TrainOptions(;kwargs...)
     opts = __TrainOptions()
@@ -165,6 +165,7 @@ julia> obj3 = CreateGaussianKLObjective(train, test);
 
 julia> obj4 = CreateGaussianKLObjective(train, test, outDim);
 ```
+See also[`TrainMap`](@ref), [`TrainMapOptions`](@ref)
 """
 CreateGaussianKLObjective
 
@@ -173,9 +174,14 @@ CreateGaussianKLObjective(train::Matrix{Float64},test::Matrix{Float64}) = Create
 
 """
     `ATMOptions(;kwargs...)`
+Options for using the Adaptive Transport Map algorithm from [Baptista, et al.](https://arxiv.org/pdf/2009.10303.pdf)
 
-Takes the fields from MParT's `ATMOptions` as keyword arguments, and
-assigns the field value based on a String from keyword arguments.
+Inherits all keywords from `MapOptions` and `TrainOptions`, plus the arguments below.
+
+# Arguments
+- `maxPatience::Int`: Number of "stationary" algorithm iterations tolerated
+- `maxSize::Int`: the _total_ number of multiindices in the _entire map_ that the algorithm is allowed to add. Should be larger than the sum of the sizes of all multiindex sets across all dimensions for the map
+- `maxDegrees::MultiIndex`: The maximum degree of any expansion term for each dimension (should be length of dimensions of the map)
 
 # Examples
 ```jldoctest
@@ -189,6 +195,9 @@ function ATMOptions(;kwargs...)
     for kwarg in kwargs
         field = Symbol("__"*string(first(kwarg))*"!")
         value = last(kwarg)
+        if value isa String && !startswith(value, "opt") && value == "verbose"
+            value = MParT.eval(Meta.parse("__"*value))
+        end
         getfield(MParT, field)(opts, value)
     end
     opts
@@ -197,6 +206,7 @@ end
 # To print MapOptions, TrainOptions objects
 Base.show(io::IO,::MIME"text/plain", opts::__MapOptions) = print(io,string(opts))
 Base.show(io::IO,::MIME"text/plain", opts::__TrainOptions) = print(io,string(opts))
+Base.show(io::IO,::MIME"text/plain",opts::__ATMOptions) = print(io, string(opts))
 
 
 """
@@ -212,9 +222,10 @@ end
 
 """
     TrainMapAdaptive(msets, objective, options)
-This implements the ATM algorithm (Baptista et al. 2022), which takes in
-an initial guess of multiindex sets for each output dimension and adapts
-those sets to better suit the probability distribution.
+Implements the ATM algorithm [Baptista, et al.](https://arxiv.org/pdf/2009.10303.pdf)
+
+Takes in initial guess of multiindex sets for each output dimension and adapts
+those sets to better approximate the probability distribution of interest using monotone transport maps.
 
 # Examples
 """
@@ -225,7 +236,7 @@ end
 
 
 """
-    `TriangularMap(maps::Vector)`
+    TriangularMap(maps::Vector)
 Creates a `TriangularMap` from a vector of `ConditionalMapBase` objects.
 
 # Examples
