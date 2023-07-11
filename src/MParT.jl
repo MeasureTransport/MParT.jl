@@ -43,8 +43,7 @@ julia> A = [1 2 3;1 1 1; 0 0 0];
 
 julia> mset = MultiIndexSet(A);
 ```
-
-See also[`MultiIndex`](@ref), [`FixedMultiIndex`](@ref), [`Fix`](@ref)
+See also [`MultiIndex`](@ref), [`FixedMultiIndex`](@ref), [`Fix`](@ref)
 """
 MultiIndexSet(A::AbstractMatrix{<:Integer}) = MultiIndexSet(Cint.(collect(A)))
 MultiIndexSet(A::AbstractVector{<:Integer}) = MultiIndexSet(Cint.(collect(reshape(A, length(A), 1))))
@@ -56,8 +55,9 @@ Base.lastindex(A::MultiIndex) = length(A)
 
 """
     MapOptions(;kwargs...)
-Takes the fields from MParT's `MapOptions` as keyword arguments, and
-assigns the field value based on a String from the kwarg value. Some arguments are included below. See C++ documentation for further detail.
+Creates options for parameterized map.
+
+All possible keyword arguments are in example, with some important arguments described below. See C++ documentation for an exhaustive description.
 
 # Arguments
 - `basisType::String`: Includes "ProbabilistHermite", "PhysicistHermite", "HermiteFunctions"
@@ -80,6 +80,7 @@ quadPts = 5
 contDeriv = true
 
 ```
+See also [`CreateComponent`](@ref), [`TriangularMap`](@ref), [`CreateTriangular`](@ref)
 """
 function MapOptions(;kwargs...)
     opts = __MapOptions()
@@ -96,9 +97,9 @@ end
 
 """
     `TrainOptions(;kwargs...)`
+Creates options for using `TrainMap` to train a transport map.
 
-Takes the fields from MParT's `TrainOptions` as keyword arguments, and
-assigns the field value based on a String from keyword arguments. See example for possible arguments.
+See example for possible arguments.
 
 # Examples
 ```jldoctest
@@ -114,7 +115,7 @@ opt_maxtime = inf
 verbose = 0
 
 ```
-See also[`TrainMap`](@ref), [`CreateGaussianKLObjective`](@ref)
+See also [`TrainMap`](@ref), [`CreateGaussianKLObjective`](@ref)
 """
 function TrainOptions(;kwargs...)
     opts = __TrainOptions()
@@ -165,7 +166,7 @@ julia> obj3 = CreateGaussianKLObjective(train, test);
 
 julia> obj4 = CreateGaussianKLObjective(train, test, outDim);
 ```
-See also[`TrainMap`](@ref), [`TrainMapOptions`](@ref)
+See also [`TrainMap`](@ref), [`TrainMapOptions`](@ref)
 """
 CreateGaussianKLObjective
 
@@ -189,6 +190,7 @@ julia> maxDegrees = MultiIndex(2,3); # limit both dimensions by order 3
 
 julia> ATMOptions(opt_alg="LD_SLSQP", maxDegrees=maxDegrees);
 ```
+See also [`TrainMapAdaptive`](@ref), [`TrainOptions`](@ref), [`MapOptions`](@ref)
 """
 function ATMOptions(;kwargs...)
     opts = __ATMOptions()
