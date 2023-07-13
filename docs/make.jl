@@ -16,6 +16,13 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
+        "Map Functionality" => "map.md",
+        "MultiIndices" => "multiindex.md",
+        "Map Training" => [
+            "Traditional training" => "trainmap.md",
+            "Adaptive training" => "adaptivemap.md"
+        ],
+        "Extras" => "extras.md"
     ],
 )
 

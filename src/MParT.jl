@@ -16,6 +16,12 @@ function __init__()
     Initialize(StdVector(StdString.(opts)))
 end
 
+"""
+    Concurrency()
+See how many threads MParT is using.
+"""
+Concurrency
+
 function Base.iterate(mset::MultiIndexSet)
     Size(mset) < 1 && return nothing
     mset[1],2
@@ -25,6 +31,12 @@ function Base.iterate(mset::MultiIndexSet,state::Int)
     state > Size(mset) && return nothing
     return mset[state], state+1
 end
+
+"""
+    Size(mset::MultiIndexSet)
+Number of MultiIndex objects in a MultiIndexSet `mset`.
+"""
+Size
 
 """
     MultiIndexSet(A::AbstractVecOrMat{<:Integer})
@@ -43,8 +55,36 @@ julia> A = [1 2 3;1 1 1; 0 0 0];
 
 julia> mset = MultiIndexSet(A);
 ```
-See also [`MultiIndex`](@ref), [`FixedMultiIndex`](@ref), [`Fix`](@ref)
+See also [`MultiIndex`](@ref), [`FixedMultiIndexSet`](@ref), [`Fix`](@ref)
 """
+MultiIndexSet
+
+"""
+    FixedMultiIndexSet(dim::Int, p::Int)
+Creates a FixedMultiIndexSet with dimension `dim` and total order `p`.
+
+A FixedMultiIndexSet is just a compressed, efficient way of representing a MultiIndexSet, but without as many bells and whistles.
+
+See also: [`MultiIndex`](@ref), [`MultiIndexSet`](@ref)
+"""
+FixedMultiIndexSet
+
+"""
+    CreateTotalOrder(dim::Int, p::Int)
+Creates a total order `p` MultiIndexSet object in dimension `dim`.
+
+See also: [`MultiIndexSet`](@ref)
+"""
+CreateTotalOrder
+
+"""
+    Fix(mset::MultiIndexSet, compress::Bool = true)
+Take `mset` and turn it into a `FixedMultiIndexSet` that can be `compress`ed.
+
+See also [`MultiIndex`](@ref), [`MultiIndexSet`](@ref), [`FixedMultiIndexSet`](@ref)
+"""
+Fix(mset::MultiIndexSet) = Fix(mset, true)
+
 MultiIndexSet(A::AbstractMatrix{<:Integer}) = MultiIndexSet(Cint.(collect(A)))
 MultiIndexSet(A::AbstractVector{<:Integer}) = MultiIndexSet(Cint.(collect(reshape(A, length(A), 1))))
 Base.getindex(A::MultiIndex, i::AbstractVector{<:Integer}) = getindex.((A,), i)
@@ -52,6 +92,22 @@ Base.lastindex(A::MultiIndex) = length(A)
 
 # Not implemented yet
 # Base.getindex(A::CxxWrap.reference_type_union(MParT.TriangularMap), s::Base.UnitRange) = Slice(A, first(s), last(s))
+
+"""
+    Evaluate(map, points)
+Evaluates the function `map` at `points`, where each column of `points` is a different sample.
+
+If `map` ``:\\mathbb{R}^m\\to\\mathbb{R}^n``, then `points` ``\\in\\mathbb{R}^m\\times\\mathbb{R}^k``, where ``k`` is the number of points.
+"""
+Evaluate
+
+"""
+    Inverse(map, y, x)
+If `map` represents function ``T(y,x)``, then this function calculates ``T(y,\\cdot)^{-1}(x)``.
+
+If `map` is square, **you still require `y`**, but it can be a 0 x k matrix.
+"""
+Inverse
 
 """
     MapOptions(;kwargs...)
@@ -166,12 +222,19 @@ julia> obj3 = CreateGaussianKLObjective(train, test);
 
 julia> obj4 = CreateGaussianKLObjective(train, test, outDim);
 ```
-See also [`TrainMap`](@ref), [`TrainMapOptions`](@ref)
+See also [`TrainMap`](@ref), [`TrainOptions`](@ref)
 """
 CreateGaussianKLObjective
 
 CreateGaussianKLObjective(train::Matrix{Float64}) = CreateGaussianKLObjective(train,0)
 CreateGaussianKLObjective(train::Matrix{Float64},test::Matrix{Float64}) = CreateGaussianKLObjective(train,test,0)
+
+
+"""
+    TestError(obj::MapObjective, map)
+Uses the test dataset in obj to evaluate the error of `map`.
+"""
+TestError
 
 """
     `ATMOptions(;kwargs...)`
@@ -221,6 +284,25 @@ function DeserializeMap(filename::String)
     dims[1], dims[2], coeffs
 end
 
+"""
+    Deserialize(obj, filename)
+Deserializes `filename` and puts the contents in `obj`. REQUIRES CEREAL INSTALLATION.
+
+The object `obj` can be of type `MapOptions` or `FixedMultiIndexSet`. This will create a new pointer-- other objects with the same pointer will not be modified, but the contents of `obj` will now point to the deserialized object.
+"""
+Deserialize
+
+"""
+    Serialize(obj, filename)
+Serializes `obj` into file `filename`. REQUIRES CEREAL INSTALLATION.
+"""
+Serialize
+
+"""
+    TrainMap(map, obj::MapObjective, opts::TrainOptions)
+Trains `map` according to the objective `obj` with training options `opts`.
+"""
+TrainMap
 
 """
     TrainMapAdaptive(msets, objective, options)
@@ -260,7 +342,19 @@ function TriangularMap(maps::Vector)
 end
 
 """
-    `ComposedMap(maps::Vector)`
+    CreateTriangular(inDim::Int, outDim::Int, p::Int, opts::MapOptions)
+Creates a total order `p` map with dimensions `inDim` and `outDim` with specifications `opts`.
+"""
+CreateTriangular
+
+"""
+    CreateComponent(mset::FixedMultiIndexSet, opts::MapOptions)
+Create a single-output component with approximation order given by `mset` and specified by `opts`
+"""
+CreateComponent
+
+"""
+    ComposedMap(maps::Vector)
 Creates a `ComposedMap` from a vector of `ConditionalMapBase` objects.
 """ # TODO: Example
 function ComposedMap(maps::Vector{<:ConditionalMapBasePtr})
