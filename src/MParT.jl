@@ -399,6 +399,8 @@ export CreateComponent, CreateTriangular
 export MapOptions
 # Serialization-related exports
 export Serialize, Deserialize, DeserializeMap
+# Distribution-related exports
+export CreateGaussianPullback, CreateGaussianPushforward
 # Map training related exports
 export CreateGaussianKLObjective, TrainOptions, TrainMap, TestError
 # ATM-related exports
