@@ -336,9 +336,9 @@ julia> components = [CreateComponent(mset, opts) for mset in msets];
 julia> trimap = TriangularMap(components);
 ```
 """
-function TriangularMap(maps::Vector)
+function TriangularMap(maps::Vector, move_coeffs::Bool = true)
     maps = StdVector([map for map in maps])
-    TriangularMap(maps)
+    TriangularMap(maps, move_coeffs)
 end
 
 """
