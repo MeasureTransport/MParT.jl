@@ -320,8 +320,11 @@ end
 
 
 """
-    TriangularMap(maps::Vector)
+    TriangularMap(maps::Vector, move_coeffs::Bool = true)
 Creates a `TriangularMap` from a vector of `ConditionalMapBase` objects.
+
+The new object takes ownership of the coeffs of the maps in `maps` if
+`move_coeffs` is true.
 
 # Examples
 ```jldoctest
@@ -336,9 +339,9 @@ julia> components = [CreateComponent(mset, opts) for mset in msets];
 julia> trimap = TriangularMap(components);
 ```
 """
-function TriangularMap(maps::Vector)
+function TriangularMap(maps::Vector, move_coeffs::Bool = true)
     maps = StdVector([map for map in maps])
-    TriangularMap(maps)
+    TriangularMap(maps, move_coeffs)
 end
 
 """
