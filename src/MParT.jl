@@ -3,17 +3,28 @@ module MParT
     using CxxWrap
     using MParT_jll
     import Libdl
-    @wrapmodule libmpartjl :MParT_julia_module
-    import Base: getindex, lastindex, show, iterate
+    @wrapmodule ()->libmpartjl :MParT_julia_module
+    import Base: getindex, lastindex, show, iterate, convert
 
     ConditionalMapBasePtr = CxxWrap.StdLib.SharedPtr{<:ConditionalMapBase}
+    for op = (:Evaluate, :Gradient, :Inverse,
+              :LogDeterminant, :LogDeterminantCoeffGrad, :LogDeterminantInputGrad,
+              :numCoeffs, :CoeffMap, :CoeffGrad, :SetCoeffs, :TestError)
+        eval(quote
+            $op(obj::CxxWrap.StdLib.SharedPtr, args...) = $op(obj[], args...)
+        end)
+    end
 
 function __init__()
     @initcxx
     threads = get(ENV, "KOKKOS_NUM_THREADS", nothing)
-    opts = isnothing(threads) ? [] : ["kokkos_num_threads", threads]
-    length(opts) > 0 && @info "Using MParT options: "*string(string.(opts))
-    Initialize(StdVector(StdString.(opts)))
+    opts = StdVector{StdString}()
+    if !isnothing(threads)
+        push!(opts, StdString("kokkos_num_threads"))
+        push!(opts, StdString(string(threads)))
+    end
+    length(opts) > 0 && @info "Using MParT options: "*join(string.(opts),", ")
+    Initialize(opts)
 end
 
 """

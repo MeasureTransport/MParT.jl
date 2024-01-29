@@ -9,7 +9,7 @@ Libdl = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
 MParT_jll = "bee5971c-294f-5168-9fcd-9fb3c811d495"
 
 [compat]
-CxxWrap = "0.12"
+CxxWrap = "0.14"
 MParT_jll = "2.1.0"
 julia = "1.6"
 
