@@ -145,6 +145,7 @@ quadMaxSub = 30
 quadMinSub = 0
 quadPts = 5
 contDeriv = true
+nugget = 0
 
 ```
 See also [`CreateComponent`](@ref), [`TriangularMap`](@ref), [`CreateTriangular`](@ref)
