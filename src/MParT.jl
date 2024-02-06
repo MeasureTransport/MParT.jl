@@ -7,7 +7,7 @@ module MParT
     import Base: getindex, lastindex, show, iterate, convert
 
     ConditionalMapBasePtr = CxxWrap.StdLib.SharedPtr{<:ConditionalMapBase}
-    for op = (:Evaluate, :Gradient, :Inverse,
+    for op = (:Evaluate, :Gradient, :Inverse, :inputDim, :outputDim,
               :LogDeterminant, :LogDeterminantCoeffGrad, :LogDeterminantInputGrad,
               :numCoeffs, :CoeffMap, :CoeffGrad, :SetCoeffs, :TestError)
         eval(quote
