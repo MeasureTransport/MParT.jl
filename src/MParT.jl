@@ -265,7 +265,7 @@ Inherits all keywords from `MapOptions` and `TrainOptions`, plus the arguments b
 ```jldoctest
 julia> maxDegrees = MultiIndex(2,3); # limit both dimensions by order 3
 
-julia> ATMOptions(opt_alg="LD_SLSQP", maxDegrees=maxDegrees);
+julia> ATMOptions(maxDegrees=maxDegrees);
 ```
 See also [`TrainMapAdaptive`](@ref), [`TrainOptions`](@ref), [`MapOptions`](@ref)
 """
