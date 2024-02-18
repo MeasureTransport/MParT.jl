@@ -398,7 +398,7 @@ MultiIndex(A::AbstractVector{<:Int}) = MultiIndex(StdVector(Cuint.(A)))
 
 # MultiIndex-related exports
 export MultiIndex, MultiIndexSet, FixedMultiIndexSet
-export Fix, CreateTotalOrder, Size
+export Fix, CreateTotalOrder, Size, addto!
 # ParameterizedFunctionBase-related exports
 export CoeffMap, SetCoeffs, numCoeffs, inputDim, outputDim
 export Evaluate, CoeffGrad, Gradient

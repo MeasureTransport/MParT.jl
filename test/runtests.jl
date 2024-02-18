@@ -4,6 +4,9 @@ using Test, MParT
     # @testset "Affine, Composed Map" begin # This test doesn't work due to weird constructor
     #     include("mapTypeTest.jl")
     # end
+    @testset "MultiIndex" begin
+        include("multiindex.jl")
+    end
     @testset "Monotone Least Squares" begin
         include("MLS.jl")
     end
