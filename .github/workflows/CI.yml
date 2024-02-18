@@ -35,6 +35,31 @@ jobs:
           arch: ${{ matrix.arch }}
       - uses: julia-actions/cache@v1
       - uses: julia-actions/julia-buildpkg@v1
+      - name: Checkout MParT
+        uses: actions/checkout@v3
+        with:
+          path: mpart
+      - name: Configure MParT
+        shell: bash -l {0}
+        run: |
+          cd $GITHUB_WORKSPACE/mpart
+          mkdir build && cd build
+          cmake -DKokkos_DIR=$GITHUB_WORKSPACE/KOKKOS_INSTALL/lib/cmake/Kokkos \
+                -DMPART_FETCH_DEPS=OFF \
+                -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/MPART_INSTALL/ \
+                ../
+
+      - name: Build MParT
+        shell: bash -l {0}
+        run: cd $GITHUB_WORKSPACE/mpart/build; make -j2 install
+
+      - name: Setup Julia
+        run: |
+          julia -e "using Pkg; Pkg.add([\"CxxWrap\",\"TestReports\"])"
+          export GITHUB_JULIA_PATH=$(julia -e "println(DEPOT_PATH[1])")
+          echo -n $'[bee5971c-294f-5168-9fcd-9fb3c811d495]\nMParT = \"' >> $GITHUB_JULIA_PATH/artifacts/Overrides.toml
+          echo -n $GITHUB_WORKSPACE                                     >> $GITHUB_JULIA_PATH/artifacts/Overrides.toml
+          echo -n "/MPART_INSTALL\""                                    >> $GITHUB_JULIA_PATH/artifacts/Overrides.toml
       - uses: julia-actions/julia-runtest@v1
   docs:
     name: Documentation
