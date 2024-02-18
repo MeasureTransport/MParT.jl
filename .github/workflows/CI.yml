@@ -38,6 +38,7 @@ jobs:
       - name: Checkout MParT
         uses: actions/checkout@v3
         with:
+          repository: MeasureTransport/MParT
           path: mpart
       - name: Configure MParT
         shell: bash -l {0}
