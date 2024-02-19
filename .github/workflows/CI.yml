@@ -35,31 +35,6 @@ jobs:
           arch: ${{ matrix.arch }}
       - uses: julia-actions/cache@v1
       - uses: julia-actions/julia-buildpkg@v1
-      - name: Checkout MParT
-        uses: actions/checkout@v3
-        with:
-          repository: MeasureTransport/MParT
-          path: mpart
-
-      - name: Setup Julia
-        run: |
-          export GITHUB_JULIA_PATH=$(julia -e "println(DEPOT_PATH[1])")
-          echo -n $'[bee5971c-294f-5168-9fcd-9fb3c811d495]\nMParT = \"' >> $GITHUB_JULIA_PATH/artifacts/Overrides.toml
-          echo -n $GITHUB_WORKSPACE                                     >> $GITHUB_JULIA_PATH/artifacts/Overrides.toml
-          echo -n "/MPART_INSTALL\""                                    >> $GITHUB_JULIA_PATH/artifacts/Overrides.toml
-
-      - name: Configure MParT
-        shell: bash -l {0}
-        run: |
-          cd $GITHUB_WORKSPACE/mpart
-          mkdir build && cd build
-          export JLCXX_PATH=$(julia -e "using Pkg; Pkg.activate(\"$GITHUB_WORKSPACE\",io=devnull); import CxxWrap; print(CxxWrap.prefix_path())")
-          cmake -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/MPART_INSTALL/ -DJlCxx_DIR=$JLCXX_PATH/lib/cmake/JlCxx/ ../
-
-      - name: Build MParT
-        shell: bash -l {0}
-        run: cd $GITHUB_WORKSPACE/mpart/build; make -j2 install
-
       - uses: julia-actions/julia-runtest@v1
   docs:
     name: Documentation
