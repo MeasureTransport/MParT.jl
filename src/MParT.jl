@@ -1,19 +1,20 @@
 # Wrapping code to make the Julia module usable
 module MParT
-    using CxxWrap
-    using MParT_jll
-    import Libdl
-    @wrapmodule ()->libmpartjl :MParT_julia_module
-    import Base: getindex, lastindex, show, iterate, convert
 
-    ConditionalMapBasePtr = CxxWrap.StdLib.SharedPtr{<:ConditionalMapBase}
-    for op = (:Evaluate, :Gradient, :Inverse, :inputDim, :outputDim,
-              :LogDeterminant, :LogDeterminantCoeffGrad, :LogDeterminantInputGrad,
-              :numCoeffs, :CoeffMap, :CoeffGrad, :SetCoeffs, :TestError)
-        eval(quote
-            $op(obj::CxxWrap.StdLib.SharedPtr, args...) = $op(obj[], args...)
-        end)
-    end
+using CxxWrap
+using MParT_jll
+import Libdl
+@wrapmodule ()->libmpartjl :MParT_julia_module
+import Base: getindex, lastindex, show, iterate, vec
+
+ConditionalMapBasePtr = CxxWrap.StdLib.SharedPtr{<:ConditionalMapBase}
+for op = (:Evaluate, :Gradient, :Inverse, :inputDim, :outputDim,
+            :LogDeterminant, :LogDeterminantCoeffGrad, :LogDeterminantInputGrad,
+            :numCoeffs, :CoeffMap, :CoeffGrad, :SetCoeffs, :TestError)
+    eval(quote
+        $op(obj::CxxWrap.StdLib.SharedPtr, args...) = $op(obj[], args...)
+    end)
+end
 
 function __init__()
     @initcxx
@@ -100,6 +101,7 @@ MultiIndexSet(A::AbstractMatrix{<:Integer}) = MultiIndexSet(Cint.(collect(A)))
 MultiIndexSet(A::AbstractVector{<:Integer}) = MultiIndexSet(Cint.(collect(reshape(A, length(A), 1))))
 Base.getindex(A::MultiIndex, i::AbstractVector{<:Integer}) = getindex.((A,), i)
 Base.lastindex(A::MultiIndex) = length(A)
+Base.vec(A::MultiIndex) = Int.(ToVector(A))
 
 # Not implemented yet
 # Base.getindex(A::CxxWrap.reference_type_union(MParT.TriangularMap), s::Base.UnitRange) = Slice(A, first(s), last(s))
@@ -263,7 +265,7 @@ Inherits all keywords from `MapOptions` and `TrainOptions`, plus the arguments b
 ```jldoctest
 julia> maxDegrees = MultiIndex(2,3); # limit both dimensions by order 3
 
-julia> ATMOptions(opt_alg="LD_SLSQP", maxDegrees=maxDegrees);
+julia> ATMOptions(maxDegrees=maxDegrees);
 ```
 See also [`TrainMapAdaptive`](@ref), [`TrainOptions`](@ref), [`MapOptions`](@ref)
 """
@@ -272,7 +274,7 @@ function ATMOptions(;kwargs...)
     for kwarg in kwargs
         field = Symbol("__"*string(first(kwarg))*"!")
         value = last(kwarg)
-        if value isa String && !startswith(value, "opt") && value == "verbose"
+        if value isa String && !startswith(value, "opt") && value != "verbose"
             value = MParT.eval(Meta.parse("__"*value))
         end
         getfield(MParT, field)(opts, value)
@@ -353,7 +355,7 @@ julia> trimap = TriangularMap(components);
 """
 function TriangularMap(maps::Vector, move_coeffs::Bool = true)
     maps = StdVector([map for map in maps])
-    TriangularMap(maps)
+    TriangularMap(maps, move_coeffs)
 end
 
 """
