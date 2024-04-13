@@ -411,7 +411,7 @@ export AffineMap, AffineFunction
 # ComposedMap-related exports
 export ComposedMap
 # MapFactory-related exports
-export CreateComponent, CreateTriangular
+export CreateComponent, CreateTriangular, CreateSigmoidComponent, CreateSigmoidTriangular
 # MapOptions-related exports
 export MapOptions
 # Serialization-related exports

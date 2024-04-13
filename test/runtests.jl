@@ -7,6 +7,9 @@ using Test, MParT
     @testset "MultiIndex" begin
         include("multiindex.jl")
     end
+    @testset "MapFactory" begin
+        include("mapFactory.jl")
+    end
     @testset "Monotone Least Squares" begin
         include("MLS.jl")
     end
