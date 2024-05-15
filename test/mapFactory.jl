@@ -70,7 +70,8 @@ end
 
 function test_CreateSigmoidMaps()
     input_dim = 6
-    num_sigmoid = 5
+    num_sigmoid = 4
+    sigmoid_terms = num_sigmoid+3
     centers_len = 2+(num_sigmoid*(num_sigmoid+1)) ÷ 2
     max_degree = 3
     centers = zeros(centers_len)
@@ -89,7 +90,7 @@ function test_CreateSigmoidMaps()
     end
     opts = MapOptions(basisType="HermiteFunctions")
     sig = CreateSigmoidComponent(input_dim, max_degree, centers, opts)
-    expected_num_coeffs = binomial(input_dim+max_degree, input_dim)
+    expected_num_coeffs = binomial(input_dim-1+max_degree, input_dim-1)*(sigmoid_terms+1)
     @test numCoeffs(sig) == expected_num_coeffs
     mset = FixedMultiIndexSet(input_dim, max_degree)
     sig_mset = CreateSigmoidComponent(mset, centers, opts)
@@ -97,7 +98,8 @@ function test_CreateSigmoidMaps()
     output_dim = input_dim
     centers_total = reduce(hcat, centers for _ in 1:output_dim)
     sig_trimap = CreateSigmoidTriangular(input_dim, output_dim, max_degree, centers_total, opts)
-    expected_num_coeffs = sum(binomial(d+max_degree, d) for d in 1:input_dim)
+    expected_num_coeffs_dim = d->(sigmoid_terms+1)*binomial(d-1+max_degree, d-1)
+    expected_num_coeffs = sum(expected_num_coeffs_dim.(1:output_dim))
     @test numCoeffs(sig_trimap) == expected_num_coeffs
 end
 
