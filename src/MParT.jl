@@ -134,10 +134,12 @@ All possible keyword arguments are in example, with some important arguments des
 
 # Example
 ```jldoctest
-julia> MapOptions(basisType="HermiteFunctions", basisLB=-3., basisUB=3.)
+julia> MapOptions(basisType="HermiteFunctions", basisLB=-3., basisUB=3., sigmoidBasisSumType="Constant")
 basisType = HermiteFunctions
 basisLB = -3
 basisUB = 3
+edgeType = SoftPlus
+sigmoidBasisSumType = Constant
 basisNorm = true
 posFuncType = SoftPlus
 quadType = AdaptiveSimpson
