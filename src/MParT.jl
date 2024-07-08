@@ -23,7 +23,7 @@ function __init__()
     try
 		init_mpart = parse(Bool, lowercase(get(ENV, "MPART_INITIALIZE", "true")))
     catch e
-		@warn "Expected MPART_INITIALIZE to be a `true`/`false` value"
+		@warn "Expected MPART_INITIALIZE to be a `true`/`false` value. Defaulting to true."
 	end
     opts = StdVector{StdString}()
     if !isnothing(threads)
