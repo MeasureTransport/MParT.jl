@@ -19,13 +19,19 @@ end
 function __init__()
     @initcxx
     threads = get(ENV, "KOKKOS_NUM_THREADS", nothing)
+	init_mpart = true
+    try
+		init_mpart = parse(Bool, lowercase(get(ENV, "MPART_INITIALIZE", "true")))
+    catch e
+		@warn "Expected MPART_INITIALIZE to be a `true`/`false` value"
+	end
     opts = StdVector{StdString}()
     if !isnothing(threads)
         push!(opts, StdString("kokkos_num_threads"))
         push!(opts, StdString(string(threads)))
     end
     length(opts) > 0 && @info "Using MParT options: "*join(string.(opts),", ")
-    Initialize(opts)
+    init_mpart && Initialize(opts)
 end
 
 """
